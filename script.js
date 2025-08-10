@@ -10,6 +10,7 @@
   let displayCount = 0;
   let running = true;
   let waitingForContinue = false;
+  let programEnded = false; // <- ajout pour bloquer après surprise
   const messageDiv = document.getElementById("message");
   const toggleBtn = document.getElementById("toggle-btn");
   const surpriseBtn = document.getElementById("surprise-btn");
@@ -18,8 +19,7 @@
   const loveText = document.getElementById("love");
   let intervalId;
 
-  // --- Nouvelle logique sans répétition ---
-  let pool = [...bodyParts]; // copie du tableau original
+  let pool = [...bodyParts];
   let currentIndex = 0;
 
   function shuffle(array) {
@@ -48,10 +48,13 @@
   }
 
   function updateMessage() {
+    if (programEnded) return; // bloque si fini
     messageDiv.classList.add("fade-out");
     setTimeout(() => {
       if (currentIndex >= pool.length) {
-        shuffle(pool); // on recommence un cycle mélangé
+        // cycle complet → bouton surprise agité
+        surpriseBtn.classList.add("shake");
+        shuffle(pool);
         currentIndex = 0;
       }
       messageDiv.textContent = `J'aime ${pool[currentIndex]}`;
@@ -96,6 +99,7 @@
   }
 
   function specialSurprise() {
+    surpriseBtn.classList.remove("shake"); // enlève agitation
     createConfetti();
     loveText.textContent = "Je t'adore !";
     loveText.style.color = "#ffde22";
@@ -106,18 +110,11 @@
     messageDiv.style.fontWeight = "700";
     messageDiv.style.background = "rgba(255, 222, 34, 0.2)";
     setTimeout(() => {
-      loveText.textContent = "Je t'aime";
-      loveText.style.color = "";
-      loveText.style.textShadow = "";
-      messageDiv.style.fontSize = "";
-      messageDiv.style.fontWeight = "";
-      messageDiv.style.background = "";
-      displayCount = 0;
-      running = true;
-      waitingForContinue = false;
-      toggleBtn.innerHTML = '<i class="fas fa-pause"></i> Arrêter';
-      toggleBtn.setAttribute("aria-pressed", "true");
-      intervalId = setInterval(updateMessage, 2000);
+      // Fin définitive
+      stopMessages();
+      programEnded = true;
+      toggleBtn.disabled = true;
+      surpriseBtn.disabled = true;
     }, 7000);
   }
 
@@ -142,6 +139,7 @@
     intervalId = setInterval(updateMessage, 2000);
 
     toggleBtn.addEventListener("click", () => {
+      if (programEnded) return;
       if (waitingForContinue) {
         waitingForContinue = false;
         startMessages();
@@ -155,6 +153,7 @@
     });
 
     surpriseBtn.addEventListener("click", () => {
+      if (programEnded) return;
       if (waitingForContinue) return;
       if (displayCount >= bodyParts.length) {
         stopMessages();
