@@ -1,96 +1,13 @@
 (() => {
   const bodyParts = [
-    "ton cœur",
-    "ton sourire",
-    "ton regard",
-    "ton âme",
-    "ton esprit",
-    "ta peau",
-    "ta douceur",
-    "ta tendresse",
-    "ta chaleur",
-    "ta passion",
-    "ta folie douce",
-    "ta gentillesse",
-    "ta sensualité",
-    "ta délicatesse",
-    "ta force",
-    "ta vulnérabilité",
-    "ta confiance",
-    "ta curiosité",
-    "ta créativité",
-    "ta patience",
-    "ta spontanéité",
-    "ta générosité",
-    "ta façon de parler",
-    "ta façon de rire",
-    "ta façon de pleurer",
-    "ta façon de penser à moi",
-    "ta façon de me surprendre",
-    "ta façon de me comprendre",
-    "ta façon de perdre la tête",
-    "ta voix",
-    "tes cheveux",
-    "tes mains",
-    "ton dos",
-    "ta bouche",
-    "ton nez",
-    "tes oreilles",
     "tes yeux",
-    "ton cou",
-    "tes épaules",
-    "ton bras",
-    "tes doigts",
-    "ta poitrine 🤭",
-    "ton ventre",
-    "tes jambes",
-    "tes genoux",
-    "tes pieds",
-    "tes talons",
-    "tes mollets",
-    "tes cuisses 😋",
-    "ton front",
-    "tes tempes",
-    "ta cervelle",
-    "tes seins",
-    "tes hanches",
-    "tes lèvres",
-    "ton rire",
-    "tes paumes",
-    "tes cils",
-    "ton sang",
-    "tes os",
-    "tes artères",
-    "tes veines",
-    "tes poumons",
-    "ta foie",
-    "ton rate",
-    "ton estomac",
-    "ton intestin",
-    "tes clavicules",
-    "ton poignet",
-    "ta cheville",
-    "ta sensibilité",
-    "tes pensées",
-    "ton esprit libre",
-    "tes tetons",
-    "ton derrière 😆",
-    "ta langue",
-    "ta manière d'être toi",
-    "ta présence",
-    "ton odeur",
-    "ton énergie",
-    "ta lumière intérieure",
-    "ta détermination",
-    "ta résilience",
-    "ton courage",
-    "ton humour",
-    "ta complicité",
-    "ton amour",
+    "ta voix",
+    "tes mains",
+    "ton sourire",
+    "ta façon de parler",
   ];
 
   let displayCount = 0;
-  let lastIndex = -1;
   let running = true;
   let waitingForContinue = false;
   const messageDiv = document.getElementById("message");
@@ -100,6 +17,18 @@
   const container = document.querySelector(".container");
   const loveText = document.getElementById("love");
   let intervalId;
+
+  // --- Nouvelle logique sans répétition ---
+  let pool = [...bodyParts]; // copie du tableau original
+  let currentIndex = 0;
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+  shuffle(pool);
 
   function createHearts() {
     const heartCount = Math.floor(window.innerWidth / 12);
@@ -121,12 +50,12 @@
   function updateMessage() {
     messageDiv.classList.add("fade-out");
     setTimeout(() => {
-      let randomIndex;
-      do {
-        randomIndex = Math.floor(Math.random() * bodyParts.length);
-      } while (randomIndex === lastIndex);
-      lastIndex = randomIndex;
-      messageDiv.textContent = `J'aime ${bodyParts[randomIndex]}`;
+      if (currentIndex >= pool.length) {
+        shuffle(pool); // on recommence un cycle mélangé
+        currentIndex = 0;
+      }
+      messageDiv.textContent = `J'aime ${pool[currentIndex]}`;
+      currentIndex++;
       displayCount++;
       messageDiv.classList.remove("fade-out");
     }, 500);
@@ -227,7 +156,7 @@
 
     surpriseBtn.addEventListener("click", () => {
       if (waitingForContinue) return;
-      if (displayCount >= 100) {
+      if (displayCount >= bodyParts.length) {
         stopMessages();
         specialSurprise();
       } else {
