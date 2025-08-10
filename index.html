@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>blvd</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <!-- Fond avec coeurs animés -->
+    <div class="background" id="background"></div>
+
+    <main class="container" role="main" aria-label="Message d'amour infini">
+      <h1 id="love">Je t'aime</h1>
+
+      <div id="message-container">
+        <div id="message">J'aime ton cœur</div>
+      </div>
+
+      <div class="button-container">
+        <button
+          id="toggle-btn"
+          aria-pressed="true"
+          aria-label="Arrêter ou démarrer le message"
+        >
+          <i class="fas fa-pause"></i> Arrêter
+        </button>
+        <button id="surprise-btn" aria-label="Surprise spéciale">
+          <i class="fas fa-gift"></i> Surprise
+        </button>
+      </div>
+
+      <div class="signature">Saint, pour toujours 🧸❤️</div>
+    </main>
+  </body>
+</html>
